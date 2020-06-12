@@ -1,0 +1,31 @@
+@startuml
+
+interface Iterator{
+
++ hasNext()boolean
++ next()Object
+}
+
+interface Container{
++ createIterator()Iterator
+}
+class YoneticiIterator{
++ hasNext()boolean
++ next()Object
+}
+class YoneticiContainer{
+- YoneticiListHashtableInteger, Yonetici
++ addYonetici(String,String,int)void
++ createIterator()Iterator
+}
+class Client{
++ main()void
+}
+Iterator -- YoneticiIteratorimplements
+Container -- YoneticiContainerimplements
+
+YoneticiContainer - YoneticiIteratorhas
+YoneticiContainer -- Client uses
+
+
+@enduml

@@ -1,0 +1,46 @@
+@startuml
+
+interface Observer{
+
++ update() : void
++ setSubject(Subject) : void
+}
+
+interface Subject{
++ addObserver(Observer) : void
++ removeObserver(Observer) : void
++ notifyObservers() : void
++ getUpdate(Observer) : Object
+}
+class BankaKullanici{
++ kullanici_name : String
+- topic : Subject
++ update() : void
++ setSubject(Subject) : void
+
+}
+class KampanyaMesaj_Subscriber{
+- ksample : Kampanya
+- observers : ArrayList<Observer>
+- changed : boolean
+- MUTEX : Object
+
++ addObserver(Observer) : void
++ removeObserver(Observer) : void
++ notifyObservers() : void
++ getUpdate(Observer) : Object
+}
+class MainProgram{
++ main():void
+}
+class Kampanya{
++ kampanyaBaslik : String
++ kampanyaSuresi : String
++ kampanyaIcerik: String
+}
+Observer <|-- BankaKullanici:implements
+Subject <|-- KampanyaMesaj_Subscriber:implements
+
+Subject .> Observer : notify
+KampanyaMesaj_Subscriber .> BankaKullanici : observe
+@enduml

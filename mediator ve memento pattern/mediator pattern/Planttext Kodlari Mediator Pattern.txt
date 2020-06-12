@@ -1,0 +1,33 @@
+@startuml
+
+interface MerkeziBankaMediator{
+
++ sendBilgilendirmeMesaj(String, BankaSubesi):void
++ addSube(BankaSubesi):void
+}
+
+abstract BankaSubesi{
+# mediator:MerkeziBankaMediator
+# subeIsmi:String
++ sendMesaj(String):void
++ receiveMesai(String):void
+}
+class MerkeziBankaMediator_Impl{
+- subeList:List<BankaSubesi>
++ sendBilgilendirmeMesaj(String, BankaSubesi):void
++ addSube(BankaSubesi):void
+}
+class BankaSubesi_Impl{
++ sendBilgilendirmeMesaj(String, BankaSubesi):void
++ addSube(BankaSubesi):void
+}
+class MainProgram{
++ main():void
+}
+MerkeziBankaMediator <|-- MerkeziBankaMediator_Impl:implements
+BankaSubesi <|-- BankaSubesi_Impl:extends
+
+BankaSubesi -> MerkeziBankaMediator:mediator
+BankaSubesi <-MerkeziBankaMediator_Impl:uses
+
+@enduml

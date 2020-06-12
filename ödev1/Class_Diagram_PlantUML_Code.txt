@@ -1,0 +1,110 @@
+@startuml
+
+class EnumCinsiyet{
+
++ Erkek : undefined
+
++ Kadin : undefined
+
+}
+
+class Abstract_Kisi{ 
+
+
++Ad : String
+ 
++Soyad : String 
+
+-TC : String 
+
+-Dogum Tarihi : Date 
+
++Cinsiyet : EnumCinsiyet 
+
++ID : Integer 
+
++TelefonNumarasi : String 
+
+-Mail : String 
+
+-DogumYeri : String
+
+
+}
+
+
+Class Doktor{
+
++Brans : DoktorBrans
+
++DoktorListesi : Doktor
+
+}
+
+
+Class Hemsire{
+
++Brans : HemsireBrans
+
++HemsireListesi : Hemsire
+
++AtamaDurumu : Boolean
+
+}
+
+
+Class Hasta{
+
++HastaListesi : Hasta
+
+
+}
+
+Class Personel {
+
++Brans : PersonelBrans
+
++PersonelListesi : Personel
+
+}
+
+
+Abstract_Kisi ..> Hasta : <<import>>
+
+Abstract_Kisi ..> Doktor : <<import>>
+
+Abstract_Kisi ..> Hemsire : <<import>>
+
+Abstract_Kisi ..> Personel : <<import>>
+
+
+EnumCinsiyet --|> Abstract_Kisi
+
+
+
+interface MaasAlabilen{
+
++Maas : Integer
+
+}
+
+interface HemsireAlabilen{
+
++DoktoraBagliHemsireListesi : Hemsire
+
+}
+
+
+MaasAlabilen ..> Doktor : <<import>>
+
+MaasAlabilen ..> Hemsire : <<import>>
+
+MaasAlabilen ..> Personel : <<import>>
+
+
+
+HemsireAlabilen ..> Doktor : <<import>>
+
+
+
+@enduml

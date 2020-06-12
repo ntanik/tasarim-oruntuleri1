@@ -1,0 +1,40 @@
+@startuml
+
+Class ExportingProcess{
+-processNo:long
++<<constructor>> ExportingProcess(processNo:long)
++ getProcessNo():long
+}
+abstract OturumObjectPool{
+- pool:ConcurrentLinkedQueue<T>
+- executorService:ScheduledExecutorService
++ <<constructor>>OturumObjectPool(minObjects:int)
++ <<constructor>>OturumObjectPool(minObjects:int,maxObjects:int,validationInterval:long)
++ borrowObject():T
++ returnObject(object:T):void
++ shutdown():void
++ {abstract}createObject():T
+# initialize(minObjects:int):void
+}
+
+class OturumObjectDemo{ 
+- pool:OturumObjectPool<ExportingProcess>
+- sube_name:String
++ setUp():void
++ tearDown():void
++ testObjectPool():void
++ main():void
+}
+Class ExportingTask{
+- pool:OturumObjectPool<ExportingProcess>
+- threadNo : int
++ <<constructor>> ExportingTask(pool:OturumObjectPool<ExportingProcess>,threadNo:int)
++ run():void
+}
+
+
+OturumObjectDemo --> OturumObjectPool:asks for OturumObject from OturumObjectPool
+
+
+
+@enduml

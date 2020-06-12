@@ -1,0 +1,134 @@
+*Factory Pattern*
+
+1.Örnek: Bu örnek uygulamamızda parasal işlemi türlerinden olan transfer işlemi,yatırma işlemi ve borç kredi işlemi bu işlemler direk kullanıcıdan yaratılmak istemediğimizden dolayı ParasalislemiFactory sınıfının CreateIslem metodunu kullanarak tek bir instance(Parasalislemi) üzerinden gerekli nesnenin üretilmesi sağlamaktadır. Uygulamanın class diyagramlari aşağıdaki gibidir.
+
+**Factory Pattern Örneğin Kodları:*
+
+*BorcKrediOdeme.java
+
+package FactoryPattern;
+
+public class BorcKrediOdeme extends Parasalislemi
+{
+	public void islemTuru()
+	{
+		System.out.println("Borç/kredi ödeme işlemi gerçekleşecektir!!");
+	}
+}
+
+* Transferislemi.java
+
+package FactoryPattern;
+public class Transferislemi extends Parasalislemi
+{
+	public void islemTuru()
+	{
+		System.out.println("Para transfer işlemi gerçekleşecektir!!");
+	}
+}
+
+* Yatirmaislemi.java
+
+package FactoryPattern;
+
+public class Yatirmaislemi extends Parasalislemi
+{
+	public void islemTuru()
+	{
+		System.out.println("Hesabınıza para yatırma işlemi gerçekleşecektir!!");
+	}
+}
+
+*Parasalislemi.java
+
+package FactoryPattern;
+
+public abstract class Parasalislemi {
+	public void islemTuru()
+	{
+		System.out.println("Hesabınız ile bir parasal işlemi gerçekleşetirilecektir!!");
+	}
+}
+
+*ParasalislemiFactory.java
+package FactoryPattern;
+
+public class ParasalislemiFactory 
+{
+	public static Parasalislemi CreateIslem(String instanceName)
+	{
+		if (instanceName.equals("borc"))
+		{
+			return new BorcKrediOdeme();
+		}
+		else if (instanceName.equals("transfer"))
+		{
+			return new Transferislemi();
+		}
+		else if (instanceName.equals("yatirim"))
+		{
+			return new Yatirmaislemi();
+		}else
+			return null;
+	}
+}
+
+*Program.java
+
+package FactoryPattern;
+
+public class Program 
+{
+	public static void main(String[] args) 
+	{
+		System.out.println("### Factory Design Pattern's Example is Runing ###\n");
+		Parasalislemi islem=ParasalislemiFactory.CreateIslem("transfer");
+		islem.islemTuru();
+		System.out.print("\n");
+	    islem = ParasalislemiFactory.CreateIslem("borc");
+	    islem.islemTuru();
+	}
+}
+
+Result:
+
+### Factory Design Pattern's Example is Runing ###
+
+Para transfer işlemi gerçekleşecektir!!
+
+Borç/kredi ödeme işlemi gerçekleşecektir!!
+
+
+*UML Diagram
+
+@startuml
+abstract Parasalislemi{
++ islemTuru():void
+}
+
+class BorcKrediOdeme{ 
++ islemTuru():void
+}
+class Yatirmaislemi{
++ islemTuru():void
+}
+
+Class Transferislemi{ 
++ islemTuru():void
+}
+
+
+Class ParasalislemiFactory{
++ createIslem(String):Parasalislemi
+}
+
+Class Program{
++ main():void
+}
+Parasalislemi <-- BorcKrediOdeme
+Parasalislemi <-- Transferislemi
+Parasalislemi <-- Yatirmaislemi
+
+Parasalislemi <-- ParasalislemiFactory : Create
+Program --> ParasalislemiFactory : Asks
+@enduml

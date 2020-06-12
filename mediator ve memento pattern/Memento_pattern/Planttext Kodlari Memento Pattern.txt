@@ -1,0 +1,39 @@
+@startuml
+
+class Bankahesabi_Memento{
+- account_State : String
+
++ Bankahesabi_Memento(String) 
++ getState() : String
+}
+
+
+Class Bankahesabi_Orginator{
+
+- account_State : String
+
++ setState(String) : void
++ getState() : String
++ saveStateToMemento() : Bankahesabi_Memento
++ getStateFromMemento(Bankahesabi_Memento) : void
+}
+
+class Bankahesabi_CareTaker{
+- mementoList : List<Bankahesabi_Memento>
+
++ add(Bankahesabi_Memento) : void
++ get(int) : Bankahesabi_Memento
+
+}
+
+class MementoPatternDemo{
++ main():void
+}
+
+Bankahesabi_Memento <-- Bankahesabi_CareTaker : <<uses>>
+
+
+Bankahesabi_Orginator -> Bankahesabi_Memento : <<uses>>
+
+
+@enduml

@@ -1,0 +1,320 @@
+BUILDER DESIGN PATTERN
+
+Örnek olarak hayali bir Fast Food firmasının müşterilerine sattığı ürünleri modelleyen bir yapımız olsun. Müşteriler farklı besinleri ihtiyaçlarına göre talep eder ve sipariş edebilir. Sipariş; yiyecek, içecek, tatlı ve salata ürünü olmak üzere 4 adet farklı modelden oluştuğunu düşünelim. Örneğin firmaya gelen bir müşteri, yiyecek olarak hamburger, içecek olarak kola, tatlı olarak donut ve salata olarak da Cesar Salata istesin. Bu durumda müşteri bir menu sipariş edecektir ve siparişi 4 nesneden oluşacaktır.
+
+1.Food Sınıfı
+
+package Builder.Menu;
+
+public class Food {
+
+   private String food;
+   
+   public Food(String food) {
+      this.setFood(food);
+   }
+
+   public String getFood() {
+      return food;
+   }
+
+   public void setFood(String food) {
+      this.food = food;
+   }
+}
+
+2.Drink Sınıfı
+
+package Builder.Menu;
+
+public class Drink {
+
+   private String drink;
+
+   public Drink(String drink) {
+      this.drink = drink;
+   }
+   public String getDrink() {
+      return drink;
+   }
+   public void setDrink(String drink) {
+      this.drink = drink;
+   }
+}
+
+3.Dessert Sınıfı
+
+package Builder.Menu;
+
+public class Dessert {
+
+   private String desert;
+   
+   public Dessert(String desert) {
+      this.setDesert(desert);
+   }
+
+   public String getDesert() {
+      return desert;
+   }
+
+   public void setDesert(String desert) {
+      this.desert = desert;
+   }
+}
+
+4.Salad Sınıfı
+
+package Builder.Menu;
+
+public class Salad {
+
+   private String salad;
+
+   public Salad(String salad) {
+      this.salad = salad;
+   }
+   public String getSalad() {
+      return salad;
+   }
+
+   public void setSalad(String salad) {
+      this.salad = salad;
+   }
+}
+
+Hatırlanırsa, bir Order(Sipariş), bir Food(Yiyecek), bir Drink(İçecek), bir Dessert(Tatlı) ve bir Salad(Salata) 'dan oluşmakta idi. Yukarıdaki 4 nesneden oluşan Order sınıfı ise aşağıdaki gibidir.
+
+Order Sınıfı
+
+package Builder.Menu;
+
+public class Order {
+
+   private Food    food;
+   private Drink   drink;
+   private Dessert dessert;
+   private Salad   salad;
+
+   public Order() {
+
+   }
+
+   public Order(Food food, Drink drink, Dessert dessert, Salad salad) {
+      this.food = food;
+      this.drink = drink;
+      this.dessert = dessert;
+      this.salad = salad;
+   }
+
+   public Food getFood() {
+      return food;
+   }
+
+   public void setFood(Food food) {
+      this.food = food;
+   }
+
+   public Drink getDrink() {
+      return drink;
+   }
+
+   public void setDrink(Drink drink) {
+      this.drink = drink;
+   }
+
+   public Dessert getDessert() {
+      return dessert;
+   }
+
+   public void setDessert(Dessert dessert) {
+      this.dessert = dessert;
+   }
+
+   public Salad getSalad() {
+      return salad;
+   }
+
+   public void setSalad(Salad salad) {
+      this.salad = salad;
+   }
+}
+
+
+ Yukarıda yazılan her bir sınıf, senaryo gereği olan sınıflardır. Amaç bu standart üretim yapısının, Builder deseni üzerinde yapmaktır. Aşağıda Builder tasarım deseninin ilk göstergesi olan OrderBuilder adında soyut bir sınıf oluşumu gösterilmektedir. Bu Builder sınıfı, Order nesnelerinin setter metotlarını abstract olarak içerir.
+ 
+OrderBuilder Sınıfı
+
+package Builder.Build;
+
+import Builder.Menu.Dessert;
+import Builder.Menu.Drink;
+import Builder.Menu.Food;
+import Builder.Menu.Order;
+import Builder.Menu.Salad;
+
+public abstract class OrderBuilder {
+
+   private Order order;
+
+   public OrderBuilder() {
+
+   }
+
+   public Order getOrder() {
+      if (order == null) {
+         order = new Order();
+      }
+      return order;
+   }
+
+   public abstract void setFood(Food food);
+
+   public abstract void setDrink(Drink drink);
+
+   public abstract void setDessert(Dessert dessert);
+
+   public abstract void setSalad(Salad salad);
+}
+
+
+JuniorMenuBuilder Sınıfı
+
+package Builder.Build;
+
+import Builder.Menu.Dessert;
+import Builder.Menu.Drink;
+import Builder.Menu.Food;
+import Builder.Menu.Salad;
+
+public class JuniorMenuBuilder extends OrderBuilder {
+
+   @Override
+   public void setFood(Food food) {
+      getOrder().setFood(food);
+   }
+
+   @Override
+   public void setDrink(Drink drink) {
+      getOrder().setDrink(drink);
+      
+   }
+
+   @Override
+   public void setDessert(Dessert dessert) {
+      getOrder().setDessert(dessert);
+      
+   }
+
+   @Override
+   public void setSalad(Salad salad) {
+      getOrder().setSalad(salad);
+      
+   }
+}
+
+Yukarıdaki tüm sınıfları uygulayan main() sınıfı ise aşağıda verilmektedir.
+Uygulama
+
+Main(Waiter) Sınıfı
+
+package Builder;
+
+import Builder.Build.JuniorMenuBuilder;
+import Builder.Build.OrderBuilder;
+import Builder.Menu.Dessert;
+import Builder.Menu.Drink;
+import Builder.Menu.Food;
+import Builder.Menu.Order;
+import Builder.Menu.Salad;
+
+public class Main {
+
+   private OrderBuilder builders;
+
+   public Order makeOrder(Food food, Drink drink, Dessert dessert, Salad salad) {
+      if (food.getFood().equals("Hamburger") && drink.getDrink().equals("Cola") && dessert.getDesert().equals("Ice Cream") && salad.getSalad()
+                                                                                                                                   .equals("Cesar Salad")) {
+         builders = new JuniorMenuBuilder();
+      }
+
+      builders.setFood(food);
+      builders.setDrink(drink);
+      builders.setDessert(dessert);
+      builders.setSalad(salad);
+      return builders.getOrder();
+   }
+
+   public static void main(String[] args) {
+
+      Food food = new Food("Hamburger");
+      Drink drink = new Drink("Cola");
+      Dessert dessert = new Dessert("Ice Cream");
+      Salad salad = new Salad("Cesar Salad");
+
+      Main waiter = new Main();
+      Order juniorMenu = waiter.makeOrder(food, drink, dessert, salad);
+
+      System.out.println("Food:" + juniorMenu.getFood().getFood());
+      System.out.println("Drink:" + juniorMenu.getDrink().getDrink());
+      System.out.println("Dessert:" + juniorMenu.getDessert().getDesert());
+      System.out.println("Salad:" + juniorMenu.getSalad().getSalad());
+   }
+}
+
+*UML Diagramı*
+
+@startuml
+
+Class Food{
+    -food:String
+    +setFood(String)
+    +getFood():String
+    
+}
+Class Drink{
+    -drink:String
+    +setDrink(String)
+    +getDrink():String
+    
+}
+Class Dessert{
+    -dessert:String
+    +setDessert(String)
+    +getDessert():String
+    
+}
+Class Salad{
+    -salad:String
+    +setSalad(String)
+    +getSalad():String
+    
+}
+
+Class Order{
+    -food:Food
+    -drink:Drink
+    -salad:Salad
+    -dessert:Dessert
+    +setFood(food:Food)
+    +getFood():Food
+    ................
+}
+Abstract Class OrderBuilder{
+    -order:Order
+    +getOrder():Order
+    +setFood(food:Food)
+    +setDrink(drink:Drink)
+    +setSalad(salad:Salad)
+    +setDessert(dessert:Dessert)
+    }
+     Salad <.. Order
+      Dessert <.. Order
+     Drink <.. Order
+  Food <.. Order
+Order <..OrderBuilder
+OrderBuilder <|-- JuniorMenuBuilder 
+JuniorMenuBuilder <.. Waiter 
+
+
+

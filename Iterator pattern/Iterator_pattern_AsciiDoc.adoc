@@ -1,0 +1,291 @@
+
+### * Iterator Pattern: 
+
+#### Örnek:
+Örnek uygulamamızda Musteri Iterator ve Yonetici Iterator sınıfılarını oluşturduk. Bu Iteratorlar Müşteri ve Yönetici koleksiyon listelerinde içinde
+dolaşmamızı sağlar koleksiyonun iç yapısı bilmeden. MusteriContainer sınıfında Musteri sınıfından bir arraylist oluşturulur elemanları eklenir,
+YoneticiContainer ise Yonetici sınıfından oluşturulan nesneleri Hashtable setinde sklanır. Böylece Iterator deseni gerçekleştirmiş oluruz ve koleksiyon yapısı bilinmesine ihtiyaç olmadan koleksiyon elemanları 
+üzerinde işlem yapılabilmesini sağlanmış olur.
+
+
+
+#### CODE:
+
+.Client.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+public class Client {
+	public static void main(String[] args){
+		
+		System.out.println("### Iterator Design Pattern's Example is Runing ###\n");
+
+		System.out.println("--> Iterator Vasıtası İle Sistemin Müşterilerin Bilgileri Geri Döndürmek!!\n");
+		Container iContainer = new MusteriContainer();
+		Iterator iIterator = iContainer.createIterator();
+		while(iIterator.hasNext()){
+			Object object = iIterator.next();
+			System.out.println(object);
+		}
+		System.out.println();
+		System.out.println("--> Iterator Vasıtası İle Sistemin Yöneticilerin Bilgileri Geri Döndürmek!!\n");
+		Container yoneticiContainer = new YoneticiContainer();
+		Iterator yoneticiIterator = yoneticiContainer.createIterator();
+		while(yoneticiIterator.hasNext()){
+			Object yoneticiObj=yoneticiIterator.next();
+			System.out.println(yoneticiObj);
+		}
+	}
+
+}
+----
+.Iterator.java
+[source, java]
+----
+ package Iterator_Pattern_Example;
+
+public interface Iterator {
+	public boolean hasNext();
+	public Object next();
+}
+----
+.MusteriIterator.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+import java.util.List;
+
+public class MusteriIterator implements Iterator{
+
+	private List<Musteri> iteratmusteriList;
+	public MusteriIterator(List<Musteri> kullaniciList){
+		this.iteratmusteriList=kullaniciList;
+	}
+	public boolean hasNext() {
+		if (iteratmusteriList.size()>0)
+			return true;
+		else
+			return false;
+	}
+
+	
+	public Object next() {
+		if(this.hasNext()){
+			Musteri musteri = iteratmusteriList.get(0);
+			iteratmusteriList.remove(0);
+			return musteri;
+		}else
+			return null;
+	}
+
+}
+----
+.YoneticiIterator.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+import java.util.Hashtable;
+
+public class YoneticiIterator implements Iterator{
+	
+	private static int hashkey=0;
+	private  Hashtable<Integer, Yonetici> iteratyoneticiList;
+	public YoneticiIterator(Hashtable<Integer, Yonetici> kullaniciList){
+		this.iteratyoneticiList=kullaniciList;
+	}
+	public boolean hasNext() {
+		if (iteratyoneticiList.size()>0)
+			return true;
+		else
+			return false;
+	}
+
+	
+	public Object next() {
+		if(this.hasNext()){
+			Yonetici yonetici = iteratyoneticiList.get(hashkey);
+			iteratyoneticiList.remove(hashkey);
+			hashkey++;
+			return yonetici;
+		}else
+			return null;
+	}
+}
+----
+.Kullanici.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+public abstract class Kullanici {
+
+	private String musteri_adi;
+	private String musteri_soyadi;
+	private int age;
+	private String kullanici_turu;
+	
+	public String getKullanici_adi() {
+		return musteri_adi;
+	}
+
+	public void setKullanici_adi(String musteri_adi) {
+		this.musteri_adi = musteri_adi;
+	}
+
+	public String getKullanici_soyadi() {
+		return musteri_soyadi;
+	}
+
+	public void setKullanici_soyadi(String musteri_soyadi) {
+		this.musteri_soyadi = musteri_soyadi;
+	}
+	public String getKullanici_turu(){
+		return this.kullanici_turu;
+	}
+	
+	public void setKullanici_turu(String kullanici_turu){
+		this.kullanici_turu = kullanici_turu;
+	}
+	public int getAge(){
+		return this.age;	
+	}
+	public void setAge(int age){
+		this.age = age;
+	}
+	@Override
+	public String toString() {
+		return "musteri_adi=" + musteri_adi + ", musteri_soyadi=" + musteri_soyadi + ", age=" + age
+				+ ", kullanici_turu=" + kullanici_turu ;
+	}
+	
+}
+----
+.Musteri.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+public class Musteri extends Kullanici{
+
+	public Musteri(String musteri_adi, String musteri_soyadi,int age){
+		setKullanici_adi(musteri_adi);
+		setKullanici_soyadi(musteri_soyadi);
+		setAge(age);
+		setKullanici_turu("Müşteri");
+	}
+	
+}
+----
+.Yonetici.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+public class Yonetici extends Kullanici {
+
+	public Yonetici(String yonetici_adi, String yonetici_soyadi,int age){
+		setKullanici_adi(yonetici_adi);
+		setKullanici_soyadi(yonetici_soyadi);
+		setAge(age);
+		setKullanici_turu("Yönetici");
+	}
+	public String toString() {
+		return "yönetici_adi=" + getKullanici_adi() + ", yönetici_soyadi=" + getKullanici_soyadi() + ", age=" + getAge()
+				+ ", kullanici_turu=" + getKullanici_turu() ;
+	}
+}
+----
+.Container.java
+[source, java]
+----
+ package Iterator_Pattern_Example;
+
+public interface Container {
+	
+	public Iterator createIterator();
+	
+}
+----
+.MusteriContainer.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MusteriContainer implements Container{
+	
+	private List<Musteri> musteriList = new ArrayList<Musteri>();
+	public MusteriContainer(){
+		addMusteri("Nimet","Tanık",24);
+		addMusteri("Caner","Bulut",30);
+		addMusteri("Esma","Bodur",27);
+		
+		
+	}
+	public void addMusteri(String isim,String soyisim,int age){
+		Musteri musteriBilgisi=new Musteri(isim,soyisim,age);
+		musteriList.add(musteriBilgisi);
+	}
+	
+	public Iterator createIterator() {
+		MusteriIterator result = new MusteriIterator(musteriList);
+		return result;
+	}
+	
+}
+----
+.YoneticiContainer.java
+[source, java]
+----
+package Iterator_Pattern_Example;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
+public class YoneticiContainer implements Container{
+	
+    Hashtable<Integer, Yonetici> yoneticiList = new Hashtable<Integer, Yonetici>();
+    int hashKey = 0;
+	
+	public YoneticiContainer(){
+		addYonetici("Ahmet","Akbulut",45);
+		addYonetici("Unal","Sayar",50);
+		addYonetici("Merve","Ateş",37);
+		
+		
+	}
+	public void addYonetici(String isim,String soyisim,int age){
+		Yonetici yoneticiBilgisi=new Yonetici(isim,soyisim,age);
+		yoneticiList.put(hashKey, yoneticiBilgisi);
+		hashKey++;
+	}
+	
+	public Iterator createIterator() {
+		YoneticiIterator result = new YoneticiIterator(yoneticiList);
+		return result;
+	}
+}
+----
+#### Result:
+[source, ]
+----
+### Iterator Design Pattern's Example is Runing ###
+
+--> Iterator Vasıtası İle Sistemin Müşterilerin Bilgileri Geri Döndürmek!!
+
+musteri_adi=Nimet, musteri_soyadi=Tanık, age=24, kullanici_turu=Müşteri
+musteri_adi=Caner, musteri_soyadi=Bulut, age=30, kullanici_turu=Müşteri
+musteri_adi=Esma, musteri_soyadi=Bodur, age=27, kullanici_turu=Müşteri
+
+--> Iterator Vasıtası İle Sistemin Yöneticilerin Bilgileri Geri Döndürmek!!
+
+yönetici_adi=Ahmet, yönetici_soyadi=Akbulut, age=45, kullanici_turu=Yönetici
+yönetici_adi=Unal, yönetici_soyadi=Sayar, age=50, kullanici_turu=Yönetici
+yönetici_adi=Merve, yönetici_soyadi=Ateş, age=37, kullanici_turu=Yönetici
+----

@@ -1,0 +1,237 @@
+
+### *Observer Pattern :
+Observer tasarım deseni behavior grubununa ait, bir nesnede meydana gelen değişikliklerde içinde bulundurduğu listede bulunan nesnelere haber gönderen tasarım desenidir.
+Observer tasarım deseni; birbirleri ile bire çok (yani bir nesnenin içinde başka bir nesnenin listesinin bulunması olarak düşünebiliriz) ilişki olan nesneler arasında olay bazlı bir etkileşim olduğu durumları düzenler.
+
+
+#### Örnek:
+Örnek uygulamamızda Observer Bankanın kullanıcıları ve Subject(Observable) nesnesi Bankaların kampanya mesajları olsun. Bu şekilde Obsever tasarım deseni uygulanmış olur ve yeni bilgilendirme mesajları geldikçe kampanya uyarısına üye olan banka kullanıcılarına bildirim gönderilir.
+
+
+#### CODE:
+
+.Observer.java
+[source, java]
+----
+package Observer_Pattern;
+
+public interface Observer {
+	
+	public void update();
+	
+	public void setSubject(Subject sub);
+}
+----
+.Subject.java
+[source, java]
+----
+package Observer_Pattern;
+
+public interface Subject {
+	
+	// Register and unregister Systems's Users
+	public void addObserver(Observer observer);
+	public void removeObserver(Observer observer);
+	
+	
+	// Notify users if there is a change
+	public void notifyObservers();
+	
+	// Get updates from subjects
+	public Object getUpdate(Observer obj);
+}
+----
+.KampanyaMesaj_Subscriber.java
+[source, java]
+----
+package Observer_Pattern;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class KampanyaMesaj_Subscriber implements Subject {
+	
+	//private ArrayList<Kampanya> allKampanya;
+	private Kampanya ksample;
+	private ArrayList<Observer> observers;
+	private final Object MUTEX = new Object();
+	private boolean changed;
+	
+	public KampanyaMesaj_Subscriber(){
+		ksample = new Kampanya();
+		this.observers = new ArrayList<> ();
+	}
+	@Override
+	public void addObserver(Observer observer) {
+		if (observer == null )
+			throw new NullPointerException("Null Obsever You must to Enter full one..");
+		synchronized (MUTEX) {
+			if (!observers.contains(observer)) observers.add(observer);
+		}
+	}
+
+	@Override
+	public void removeObserver(Observer observer) {
+		
+		synchronized (MUTEX)
+		{
+			observers.remove(observer);
+		}
+	}
+
+	@Override
+	public void notifyObservers() {
+		List<Observer> observerLocal = null;
+		
+		synchronized (MUTEX) {
+			if (!changed)
+				return ;
+			observerLocal = new ArrayList<>(this.observers);
+			this.changed = false;
+		}
+		for (Observer o : observerLocal){
+			o.update();
+		}
+	}
+
+	@Override
+	public Object getUpdate(Observer obj) {
+		
+		return this.ksample;
+	}
+	
+	public void postMessage(Kampanya kampanyaMsg){
+		System.out.println("Topic'a gönderilen kampanya mesajın bilgileri: \n"+"Kampanyanın Başlığı: "+kampanyaMsg.kampanyaBaslik+
+				",\nKampanyanın İçeriği: "+kampanyaMsg.kampanyaIcerik+", Kampanyanın Süresi:"+kampanyaMsg.kampanyaSuresi);
+		this.ksample= kampanyaMsg;
+		this.changed=true;
+		notifyObservers();
+	}
+	 
+}
+----
+.BankaKullanici.java
+[source, java]
+----
+package Observer_Pattern;
+
+import java.util.ArrayList;
+
+public class BankaKullanici implements Observer{
+	
+	String kullanici_name;
+	private Subject topic;
+	
+	public BankaKullanici(String name){
+		this.kullanici_name=name;
+	}
+	
+	
+	@Override
+	public void update() {
+		Kampanya kmp = (Kampanya) topic.getUpdate(this);
+		String msg = kmp.getKampanyaIcerik();
+		if (msg==null){
+			System.out.println(kullanici_name+" :: Kampanya Mesaji yoktur !!");
+		}else 
+			System.out.println(kullanici_name+" :: Kampanya Mesaji vardir !! ==> Kampanyanın İçeriği: "+msg);
+	}
+
+	
+	@Override
+	public void setSubject(Subject sub) {
+		this.topic = sub;
+		
+	}
+	
+}
+----
+.Kampanya.java
+[source, java]
+----
+package Observer_Pattern;
+
+public class Kampanya {
+	String kampanyaBaslik;
+	String kampanyaSuresi;
+	String kampanyaIcerik;
+	public Kampanya(){
+	}
+	public Kampanya(String kampanyaBaslik,String kampanyaIcerik, String kampanyaSuresi){
+		this.kampanyaBaslik=kampanyaBaslik;
+		this.kampanyaSuresi=kampanyaSuresi;
+		this.kampanyaIcerik=kampanyaIcerik;
+	}
+	public String getKampanyaIcerik(){
+		return this.kampanyaIcerik;
+	}
+}
+----
+.MainProgram.java
+[source, java]
+----
+package Observer_Pattern;
+
+public class MainProgram {
+
+	public static void main(String[] args) {
+		
+		System.out.println("### Observer Design Pattern's Example is Runing ###\n");
+
+		// Create subjects
+		KampanyaMesaj_Subscriber kampanyaMsg=new KampanyaMesaj_Subscriber();
+		
+		// Create observers
+		Observer observer_1 = new BankaKullanici("Aykut Demir");
+		Observer observer_2 = new BankaKullanici("Alp Erdoğan");
+        Observer observer_3 = new BankaKullanici("Merve DoğanAy");
+        
+        // add observer to topic
+        kampanyaMsg.addObserver(observer_1);
+        kampanyaMsg.addObserver(observer_2);
+        kampanyaMsg.addObserver(observer_3);
+        
+        // Connect observer to subject
+        observer_1.setSubject(kampanyaMsg);
+        observer_2.setSubject(kampanyaMsg);
+        observer_3.setSubject(kampanyaMsg);
+        
+        observer_1.update();
+        observer_3.update();
+        
+        Kampanya kampanya = new Kampanya("İlk Kampanyamız","Kampanyamiz Altin dovizi alimi ile ilgilidir","1 aydır");
+        // Send Kampanya bilgileri
+        kampanyaMsg.postMessage(kampanya);
+        System.out.println("---------------------------------------------------\n");
+        kampanyaMsg.removeObserver(observer_2);
+        Kampanya kampanya_2 = new Kampanya("2. Kampanyamız","Çocukların geleceği için kumbara kampanyasına katılın","2 aydır");
+        kampanyaMsg.postMessage(kampanya_2);
+        System.out.println("---------------------------------------------------\n");
+
+	}
+
+}
+----
+
+#### Result:
+[source, ]
+----
+### Observer Design Pattern's Example is Runing ###
+
+Aykut Demir :: Kampanya Mesaji yoktur !!
+Merve DoğanAy :: Kampanya Mesaji yoktur !!
+Topic'a gönderilen kampanya mesajın bilgileri: 
+Kampanyanın Başlığı: İlk Kampanyamız,
+Kampanyanın İçeriği: Kampanyamiz Altin dovizi alimi ile ilgilidir, Kampanyanın Süresi:1 aydır
+Aykut Demir :: Kampanya Mesaji vardir !! ==> Kampanyanın İçeriği: Kampanyamiz Altin dovizi alimi ile ilgilidir
+Alp Erdoğan :: Kampanya Mesaji vardir !! ==> Kampanyanın İçeriği: Kampanyamiz Altin dovizi alimi ile ilgilidir
+Merve DoğanAy :: Kampanya Mesaji vardir !! ==> Kampanyanın İçeriği: Kampanyamiz Altin dovizi alimi ile ilgilidir
+---------------------------------------------------
+
+Topic'a gönderilen kampanya mesajın bilgileri: 
+Kampanyanın Başlığı: 2. Kampanyamız,
+Kampanyanın İçeriği: Çocukların geleceği için kumbara kampanyasına katılın, Kampanyanın Süresi:2 aydır
+Aykut Demir :: Kampanya Mesaji vardir !! ==> Kampanyanın İçeriği: Çocukların geleceği için kumbara kampanyasına katılın
+Merve DoğanAy :: Kampanya Mesaji vardir !! ==> Kampanyanın İçeriği: Çocukların geleceği için kumbara kampanyasına katılın
+---------------------------------------------------
+----

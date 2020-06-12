@@ -1,0 +1,49 @@
+@startuml
+
+abstract Kullanici{
+- Kullanici_turu : String
+- age : integer
++<<constructor>> Kullanici(kullanici_turu:String)
++ showUp():void
++ setAge(age:int):void
++ getAge(): integer
++ getKullanici_turu(): String
++ {abstract} makeShallowCopy(orijinalKullanici : Kullanici):Kullanici
++ {abstract} makeDeepCopy():Kullanici
++ {abstract} makeDeeoCopyMethod_2():Kullanici
+}
+
+class Musteri{ 
++ <<constructor>> Musteri()
++ makeShallowCopy(orijinalKullanici : Kullanici):Musteri
++ makeDeepCopy():Musteri
++ makeDeeoCopyMethod_2():Musteri
+}
+class Yonetici{
++ <<constructor>> Yonetici()
++ makeShallowCopy(orijinalKullanici : Kullanici):Kullanici
++ makeDeepCopy():Yonetici
++ makeDeeoCopyMethod_2():Yonetici
+}
+
+Class CloneFactory{
++ getShallowClone(kullaniciSample:Kullanici):Kullanici
++ getDeepClone((kullaniciSample:Kullanici):Kullanici
++ getDeepCloneMethod_2((kullaniciSample:Kullanici):Kullanici
+}
+Class TestDeepCloning{
++ main():void
+}
+Class TestShallowCloning{
++ main():void
+}
+
+Kullanici <|-- Musteri
+Kullanici <|-- Yonetici
+
+CloneFactory -> Kullanici : Clone
+TestDeepCloning -> Kullanici : use
+TestDeepCloning -> CloneFactory : use
+
+
+@enduml

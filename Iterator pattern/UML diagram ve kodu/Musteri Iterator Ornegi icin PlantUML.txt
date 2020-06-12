@@ -1,0 +1,31 @@
+@startuml
+
+interface Iterator{
+
++ hasNext():boolean
++ next():Object
+}
+
+interface Container{
++ createIterator():Iterator
+}
+class MusteriIterator{
++ hasNext():boolean
++ next():Object
+}
+class MusteriContainer{
+- musteriList:List<Musteri> 
++ addMusteri(String,String,int):void
++ createIterator():Iterator
+}
+class Client{
++ main():void
+}
+Iterator <|-- MusteriIterator:implements
+Container <|-- MusteriContainer:implements
+
+MusteriContainer -> MusteriIterator:has
+MusteriContainer <-- Client :uses
+
+
+@enduml
