@@ -1,2 +1,34 @@
+# Nimet Tanık
+
 # tasarim-oruntuleri1
-tasarım örüntüleri dersi
+
+# Giriş
+
+Tasarım desenleri, tekrar eden sorunların çözümleri ve belli problemlerin nasıl çözüleceğine dair kılavuzlardır. Bunlar, uygulamanıza ekleyebileceğiniz ve büyülü sınıflar, paketler veya kütüphaneler değildir. Daha ziyade, belirli durumlarda belirli sorunların üstesinden nasıl geleceğinizi gösteren kurallardır.
+
+Tasarım Örüntülerin Dersin
+Bu projede 12 tane tasarım deseni uygulanmıştır.
+
+1). Singleton Pattern
+
+2). Factory Pattern
+
+3). Prototype Pattern
+
+4). Object Pool Pattern
+
+5). Builder Pattern
+
+6). Abstract Factory Pattern
+
+7). Iterator Pattern
+
+8). Observer Pattern
+
+9). Mediator Pattern
+
+10). Memento Pattern
+
+11). Liskov Pattern
+
+12). Adapter Pattern
