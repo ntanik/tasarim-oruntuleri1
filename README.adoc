@@ -1,5 +1,7 @@
 # Nimet Tanık
 
+Kocaeli Üniversitesi Bilgisayar Mühendisliği Yüksek Lisans Dersi Ders Notları
+
 # tasarim-oruntuleri1
 
 # Giriş
